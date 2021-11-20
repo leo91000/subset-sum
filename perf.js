@@ -1,4 +1,4 @@
-const { find_first_subset_sum } = require('./pkg/subset_sum')
+const { get_subset_sum } = require('./pkg/subset_sum')
 const { performance } = require('perf_hooks')
 
 function vanillaSubsetSum({
@@ -33,8 +33,8 @@ function vanillaSubsetSum({
     return [];
 }
 
-function wasmSubsetSum({ array, target }) {
-    return find_first_subset_sum(array, target)
+function wasmSubsetSum({ array, target, timeout }) {
+    return get_subset_sum(array, target, timeout)
 }
 
 function perfTest({ array, target }) {
