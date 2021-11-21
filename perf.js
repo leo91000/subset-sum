@@ -1,4 +1,4 @@
-const { get_subset_sum } = require('./pkg/subset_sum')
+const { get_subset_sum } = require('./pkg/wasm_subset_sum')
 const { performance } = require('perf_hooks')
 
 function vanillaSubsetSum({
