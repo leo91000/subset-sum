@@ -1,0 +1,15 @@
+{
+  "name": "wasm-subset-sum",
+  "collaborators": [
+    "Léo Coletta <mail.leo.coletta@gmail.com>"
+  ],
+  "version": "1.0.4",
+  "files": [
+    "wasm_subset_sum_bg.wasm",
+    "wasm_subset_sum.js",
+    "index.js",
+    "index.d.ts"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts"
+}
