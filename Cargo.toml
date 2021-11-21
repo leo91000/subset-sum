@@ -1,5 +1,5 @@
 [package]
-name = "subset_sum"
+name = "wasm-subset-sum"
 version = "1.0.0"
 authors = ["Léo Coletta <mail.leo.coletta@gmail.com>"]
 edition = "2021"
