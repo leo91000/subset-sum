@@ -5,3 +5,5 @@ bin/
 pkg/
 wasm-pack.log
 .idea
+
+node_modules

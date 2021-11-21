@@ -57,8 +57,8 @@ function perfTest({ array, target }) {
         },
         wasm: {
             duration: wasmEnd - wasmStart,
-            result: typeof wasmResult === 'string' ? wasmResult : Array.from(wasmResult),
-            sum: typeof wasmResult === 'string' ? wasmResult : wasmResult.reduce((a, c) => a + c, 0)
+            result: wasmResult === undefined || typeof wasmResult === 'string' ? wasmResult : Array.from(wasmResult),
+            sum: wasmResult === undefined || typeof wasmResult === 'string' ? wasmResult : wasmResult.reduce((a, c) => a + c, 0)
         }
     }))
     console.log('-------------------------------')
@@ -76,3 +76,14 @@ perfTest({ array: [1,2,3,4,5,6,7,8,9], target: -1 })
 perfTest({ array: [1,2,3,4,5,6,7,8,9,10], target: -1 })
 perfTest({ array: [1,2,3,4,5,6,7,8,9,10,11], target: -1 })
 perfTest({ array: [1,2,3,4,5,6,7,8,9,10,11,-1], target: 0 })
+
+// Timeout test
+const timeoutStart = performance.now();
+try {
+    wasmSubsetSum({ array: [1,2,3,4,5,6,7,8,9,10,11,1,2,3,4,5,6,7,8,9,10,11,1,2,3,4,5,6,7,8,9,10,11,1,2,3,4,5,6,7,8,9,10,11,1,2,3,4,5,6,7,8,9,10,11], target: -1, timeout: 5000 });
+    console.log('not throwed :)');
+} catch (e) {
+    console.log('throwed :)');
+}
+const timeoutEnd = performance.now();
+console.log('Timeout lasted :', timeoutEnd - timeoutStart);
