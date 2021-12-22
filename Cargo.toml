@@ -26,6 +26,7 @@ fn-memo = { version = "1.2", default-features = false }
 js-sys = "0.3.55"
 strum_macros = "0.23.0"
 instant = { version = "0.1.12", features = ["wasm-bindgen", "inaccurate"] }
+num-traits = "0.2.14"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.13"

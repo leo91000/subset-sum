@@ -1,5 +1,8 @@
-use fn_memo::{recur_fn::recur_fn, unsync, FnMemo};
+use std::hash::Hash;
+use fn_memo::{unsync, FnMemo};
+use fn_memo::recur_fn::RecurFn;
 use instant::Instant;
+use num_traits::{Num};
 
 #[derive(strum_macros::Display, Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubsetSumError {
@@ -7,50 +10,58 @@ pub enum SubsetSumError {
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]
-pub struct SubsetSumArg {
-    integer_list: Vec<i32>,
-    sum: i32,
+pub struct SubsetSumArg<N: Num + Copy> {
+    integer_list: Vec<N>,
+    sum: N,
 }
 
-pub fn get_subset_sum(
-    list: Vec<i32>,
-    sum: i32,
+struct SubsetSum {
+    now: Instant,
+    timeout_in_ms: Option<u128>
+}
+
+type SubsetSumResult<N> = Result<Option<Vec<N>>, SubsetSumError>;
+
+impl <N: Num + Copy + Hash> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for SubsetSum {
+    #[inline]
+    fn body(&self, subset_sum: impl Fn(SubsetSumArg<N>) -> SubsetSumResult<N>, arg: SubsetSumArg<N>) -> SubsetSumResult<N> {
+        if let Some(timeout) = self.timeout_in_ms {
+            if self.now.elapsed().as_millis() >= timeout {
+                return Err(SubsetSumError::ExecutionTimeout);
+            }
+        }
+
+        if arg.sum.is_zero() {
+            return Ok(Some(vec![]));
+        }
+
+        if arg.integer_list.is_empty() {
+            return Ok(None);
+        }
+
+        for (index, &current) in arg.integer_list.iter().enumerate() {
+            let mut subset = arg.integer_list.clone();
+            subset.remove(index);
+
+            if let Some(mut result) = subset_sum(SubsetSumArg {
+                integer_list: subset,
+                sum: arg.sum - current,
+            })? {
+                result.push(current);
+                return Ok(Some(result));
+            }
+        }
+
+        Ok(None)
+    }
+}
+
+pub fn get_subset_sum<N: Num + Copy + Hash + Eq>(
+    list: Vec<N>,
+    sum: N,
     timeout_in_ms: Option<u128>,
-) -> Result<Option<Vec<i32>>, SubsetSumError> {
-    let now = Instant::now();
-
-    let subset_sum = unsync::memoize(recur_fn(
-        |subset_sum, arg: SubsetSumArg| -> Result<Option<Vec<i32>>, SubsetSumError> {
-            if let Some(timeout) = timeout_in_ms {
-                if now.elapsed().as_millis() >= timeout {
-                    return Err(SubsetSumError::ExecutionTimeout);
-                }
-            }
-
-            if arg.sum == 0 {
-                return Ok(Some(vec![]));
-            }
-
-            if arg.integer_list.is_empty() {
-                return Ok(None);
-            }
-
-            for (index, &current) in arg.integer_list.iter().enumerate() {
-                let mut subset = arg.integer_list.clone();
-                subset.remove(index);
-
-                if let Some(mut result) = subset_sum(SubsetSumArg {
-                    integer_list: subset,
-                    sum: arg.sum - current,
-                })? {
-                    result.push(current);
-                    return Ok(Some(result));
-                }
-            }
-
-            Ok(None)
-        },
-    ));
+) -> SubsetSumResult<N> {
+    let subset_sum = unsync::memoize(SubsetSum { now: Instant::now(), timeout_in_ms });
 
     subset_sum.call(SubsetSumArg {
         integer_list: list,

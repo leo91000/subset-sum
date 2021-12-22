@@ -1,7 +1,7 @@
 mod subset_sum;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
+#[wasm_bindgen()]
 pub fn get_subset_sum(
     list: Vec<i32>,
     sum: i32,
