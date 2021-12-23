@@ -18,7 +18,7 @@ env:
   pull_request: null
 jobs:
   build:
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    if: '!contains(github.event.head_commit.message, ''skip ci'')'
     strategy:
       fail-fast: false
       matrix:
@@ -145,7 +145,7 @@ jobs:
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         with:
-          path: crates/node/node_modules
+          path: node_modules
           key: npm-cache-${{ matrix.settings.target }}-node@16-${{ hashFiles('yarn.lock') }}
       - name: Pull latest image
         run: ${{ matrix.settings.docker }}
