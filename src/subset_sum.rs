@@ -3,10 +3,17 @@ use fn_memo::{unsync, FnMemo};
 use fn_memo::recur_fn::RecurFn;
 use instant::Instant;
 use num_traits::{Num};
+use wasm_bindgen::JsValue;
 
 #[derive(strum_macros::Display, Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubsetSumError {
     ExecutionTimeout,
+}
+
+impl From<SubsetSumError> for JsValue {
+    fn from(s: SubsetSumError) -> Self {
+        Self::from(s.to_string())
+    }
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]

@@ -1,1 +1,0 @@
-export function getSubsetSum(args: {list: number[], sum: number, timeout?: number}): number[] | undefined;
