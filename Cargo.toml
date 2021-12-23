@@ -3,3 +3,16 @@
 members = [
     "crates/*",
 ]
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+# debug = true
+# opt-level = 'z'
+
+[profile.release.package.wasm-subset-sum]
+opt-level = "s"
+
+[profile.bench]
+codegen-units = 1
+debug = true
