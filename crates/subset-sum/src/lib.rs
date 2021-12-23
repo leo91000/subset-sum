@@ -1,25 +1,16 @@
+mod error;
+
 use std::hash::Hash;
-use fn_memo::{unsync, FnMemo};
+use fn_memo::{FnMemo, unsync};
 use fn_memo::recur_fn::RecurFn;
-use num_traits::{Num};
+use num_traits::Num;
 #[cfg(feature = "wasm-js")]
 use instant::Instant;
 #[cfg(not(feature = "wasm-js"))]
 use std::time::Instant;
 #[cfg(feature = "wasm-js")]
 use wasm_bindgen::JsValue;
-
-#[derive(strum_macros::Display, Copy, Clone, Debug, Eq, PartialEq)]
-pub enum SubsetSumError {
-    ExecutionTimeout,
-}
-
-#[cfg(feature = "wasm-js")]
-impl From<SubsetSumError> for JsValue {
-    fn from(s: SubsetSumError) -> Self {
-        Self::from(s.to_string())
-    }
-}
+pub use error::SubsetSumError;
 
 #[derive(Hash, Eq, PartialEq, Clone)]
 pub struct SubsetSumArg<N: Num + Copy> {

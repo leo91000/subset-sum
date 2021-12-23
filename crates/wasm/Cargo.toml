@@ -1,5 +1,5 @@
 [package]
-name = "wasm-subset-sum"
+name = "wasm_subset_sum"
 version = "1.1.1"
 authors = ["Léo Coletta <mail.leo.coletta@gmail.com>"]
 edition = "2021"
@@ -9,7 +9,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 wasm-bindgen = { version = "0.2.63" }
-subset-sum = { path = "../subset-sum", features = ["wasm-js"] }
+subset_sum = { path = "../subset-sum", features = ["wasm-js"] }
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

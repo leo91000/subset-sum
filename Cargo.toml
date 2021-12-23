@@ -10,7 +10,7 @@ lto = "fat"
 # debug = true
 # opt-level = 'z'
 
-[profile.release.package.wasm-subset-sum]
+[profile.release.package.wasm_subset_sum]
 opt-level = "s"
 
 [profile.bench]

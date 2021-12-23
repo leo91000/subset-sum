@@ -1,10 +1,10 @@
 {
-  "name": "@js-subset-sum/subset-sum",
-  "version": "1.0.0",
+  "name": "@leo91000/subset-sum",
+  "version": "1.0.1",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
-    "name": "node-subset-sum",
+    "name": "node_subset_sum",
     "triples": {
       "additional": [
         "aarch64-apple-darwin",
@@ -28,12 +28,16 @@
     "node": ">= 10"
   },
   "scripts": {
-    "artifacts": "napi artifacts",
-    "build": "napi build --platform --release",
-    "build:debug": "napi build --platform",
-    "prepublishOnly": "napi prepublish -t npm",
-    "version": "napi version"
+    "artifacts": "napi artifacts --dist scripts/npm",
+    "build": "napi build --platform --release --cargo-name node_subset_sum --cargo-flags=\"-p node_subset_sum\"",
+    "build:debug": "napi build --platform --cargo-name node_subset_sum --cargo-flags=\"-p node_subset_sum\"",
+    "prepublishOnly": "napi prepublish -p scripts/npm --tagstyle npm",
+    "test": "echo \"No test\"",
+    "version": "napi version -p scripts/npm"
   },
   "author": "Léo Coletta <mail.leo.coletta@gmail.com>",
-  "description": "Bindings for subset sum"
+  "description": "Bindings for subset sum",
+  "repository": {
+    "url": "https://github.com/leo91000/subset-sum"
+  }
 }

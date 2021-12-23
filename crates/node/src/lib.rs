@@ -1,7 +1,14 @@
 #[macro_use]
 extern crate napi_derive;
 
+use napi::JsError;
+
 #[napi]
-pub fn sum(a: i32, b: i32) -> i32 {
-  a + b
+pub fn get_subset_sum(
+  list: Vec<i32>,
+  sum: i32,
+  timeout: Option<u32>,
+) -> Result<Option<Vec<i32>>, JsError> {
+  let results = subset_sum::get_subset_sum(list, sum, timeout.map(|timeout| timeout as u128))?;
+  Ok(results)
 }

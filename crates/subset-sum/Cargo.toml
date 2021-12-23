@@ -1,5 +1,5 @@
 [package]
-name = "subset-sum"
+name = "subset_sum"
 version = "1.0.0"
 authors = ["Léo Coletta <mail.leo.coletta@gmail.com>"]
 edition = "2021"
@@ -13,6 +13,8 @@ num-traits = "0.2.14"
 fn-memo = { version = "1.2", default-features = false }
 wasm-bindgen = { version = "^0.2.78", optional = true }
 instant = { version = "^0.1.12", features = ["wasm-bindgen", "inaccurate"], optional = true }
+napi = { version = "^2.0.2", optional = true }
 
 [features]
 wasm-js = ["wasm-bindgen", "instant"]
+napi-types = ["napi"]

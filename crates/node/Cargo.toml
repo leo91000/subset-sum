@@ -1,6 +1,6 @@
 [package]
 edition = "2021"
-name = "node-subset-sum"
+name = "node_subset_sum"
 version = "1.0.0"
 authors = ["Léo Coletta <mail.leo.coletta@gmail.com>"]
 
@@ -8,6 +8,7 @@ authors = ["Léo Coletta <mail.leo.coletta@gmail.com>"]
 crate-type = ["cdylib"]
 
 [dependencies]
+subset_sum = { path = "../subset-sum", features = ["napi-types"] }
 # Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
 napi = { version = "2.0.2", default-features = false, features = ["napi4"] }
 napi-derive = "2.0.1"
