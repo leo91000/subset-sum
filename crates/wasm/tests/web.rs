@@ -4,7 +4,7 @@ extern crate wasm_bindgen_test;
 use wasm_bindgen_test::*;
 
 extern crate wasm_subset_sum;
-use subset_sum::get_subset_sum;
+use wasm_subset_sum::get_subset_sum;
 
 wasm_bindgen_test_configure!(run_in_browser);
 

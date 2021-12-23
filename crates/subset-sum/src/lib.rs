@@ -1,8 +1,12 @@
 use std::hash::Hash;
 use fn_memo::{unsync, FnMemo};
 use fn_memo::recur_fn::RecurFn;
-use instant::Instant;
 use num_traits::{Num};
+#[cfg(feature = "wasm-js")]
+use instant::Instant;
+#[cfg(not(feature = "wasm-js"))]
+use std::time::Instant;
+#[cfg(feature = "wasm-js")]
 use wasm_bindgen::JsValue;
 
 #[derive(strum_macros::Display, Copy, Clone, Debug, Eq, PartialEq)]
@@ -10,6 +14,7 @@ pub enum SubsetSumError {
     ExecutionTimeout,
 }
 
+#[cfg(feature = "wasm-js")]
 impl From<SubsetSumError> for JsValue {
     fn from(s: SubsetSumError) -> Self {
         Self::from(s.to_string())
@@ -78,7 +83,7 @@ pub fn get_subset_sum<N: Num + Copy + Hash + Eq>(
 
 #[cfg(test)]
 mod tests {
-    use crate::subset_sum::get_subset_sum;
+    use crate::get_subset_sum;
 
     #[test]
     fn it_should_return_empty_vec_if_sum_is_zero() {
