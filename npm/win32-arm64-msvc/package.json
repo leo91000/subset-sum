@@ -1,0 +1,21 @@
+{
+  "name": "@leo91000/subset-sum-win32-arm64-msvc",
+  "version": "1.0.5",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "subset-sum.win32-arm64-msvc.node",
+  "files": [
+    "subset-sum.win32-arm64-msvc.node"
+  ],
+  "description": "Fast Node.js subset sum implementation",
+  "author": "Léo Coletta <mail.leo.coletta@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "repository": "https://github.com/leo91000/subset-sum"
+}

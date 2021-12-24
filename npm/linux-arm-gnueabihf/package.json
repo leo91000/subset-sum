@@ -1,0 +1,21 @@
+{
+  "name": "@leo91000/subset-sum-linux-arm-gnueabihf",
+  "version": "1.0.5",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm"
+  ],
+  "main": "subset-sum.linux-arm-gnueabihf.node",
+  "files": [
+    "subset-sum.linux-arm-gnueabihf.node"
+  ],
+  "description": "Fast Node.js subset sum implementation",
+  "author": "Léo Coletta <mail.leo.coletta@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "repository": "https://github.com/leo91000/subset-sum"
+}

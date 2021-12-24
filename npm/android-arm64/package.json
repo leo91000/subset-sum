@@ -1,0 +1,21 @@
+{
+  "name": "@leo91000/subset-sum-android-arm64",
+  "version": "1.0.5",
+  "os": [
+    "android"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "subset-sum.android-arm64.node",
+  "files": [
+    "subset-sum.android-arm64.node"
+  ],
+  "description": "Fast Node.js subset sum implementation",
+  "author": "Léo Coletta <mail.leo.coletta@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "repository": "https://github.com/leo91000/subset-sum"
+}
