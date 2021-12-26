@@ -8,8 +8,6 @@ use num_traits::Num;
 use instant::Instant;
 #[cfg(not(feature = "wasm-js"))]
 use std::time::Instant;
-#[cfg(feature = "wasm-js")]
-use wasm_bindgen::JsValue;
 pub use error::SubsetSumError;
 
 #[derive(Hash, Eq, PartialEq, Clone)]
