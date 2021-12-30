@@ -1,0 +1,26 @@
+{
+  "name": "@leo91000/wasm-subset-sum",
+  "repository": "leo91000/subset-sum",
+  "collaborators": [
+    "Léo Coletta <mail.leo.coletta@gmail.com>"
+  ],
+  "version": "TO_BE_DEFINED",
+  "exports": {
+    ".": {
+      "node": {
+        "import": "./dist/import/wasm_subset_sum.mjs",
+        "require": "./dist/cjs/wasm_subset_sum.cjs"
+      }
+    },
+    "./node": {
+      "import": "./dist/import/wasm_subset_sum.mjs",
+      "require": "./dist/cjs/wasm_subset_sum.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/node/wasm_subset_sum.js",
+  "module": "./dist/import/wasm_subset_sum.js",
+  "types": "./dist/cjs/wasm_subset_sum.d.ts"
+}
