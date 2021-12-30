@@ -1,11 +1,11 @@
 #![feature(generic_associated_types)]
 #![feature(in_band_lifetimes)]
 
-use std::collections::hash_map::Iter;
+use std::collections::hash_map::{Iter};
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug, Clone)]
 pub struct HashCollection<T: Hash + Eq> {
     inner: HashMap<T, usize>
 }
@@ -23,6 +23,10 @@ impl<T: Hash + Eq> HashCollection<T> {
         self.inner.contains_key(value)
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.inner.is_empty()
+    }
+
     pub fn insert(&mut self, value: T) {
         match self.inner.get(&value) {
             None => {
@@ -34,12 +38,12 @@ impl<T: Hash + Eq> HashCollection<T> {
         }
     }
 
-    pub fn remove(&mut self, value: T) {
-        if let Some(&i) = self.inner.get(&value) {
-            if i == 1 {
-                self.inner.remove(&value);
+    pub fn remove(&mut self, value: &T) {
+        if let Some(i) = self.inner.get_mut(value) {
+            if *i == 1 {
+                self.inner.remove(value);
             } else {
-                self.inner.insert(value, i - 1);
+                *i = *i - 1;
             }
         }
     }
@@ -169,20 +173,20 @@ mod tests {
             ])
         };
 
-        hash_collection.remove(32);
+        hash_collection.remove(&32);
         assert_eq!(hash_collection.inner, HashMap::from([
             (32, 2),
             (56, 1),
         ]));
 
 
-        hash_collection.remove(56);
+        hash_collection.remove(&56);
         assert_eq!(hash_collection.inner, HashMap::from([
             (32, 2),
         ]));
 
 
-        hash_collection.remove(3);
+        hash_collection.remove(&3);
         assert_eq!(hash_collection.inner, HashMap::from([
             (32, 2),
         ]));

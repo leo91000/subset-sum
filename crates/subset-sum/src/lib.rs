@@ -1,3 +1,5 @@
+#![feature(test)]
+
 mod error;
 
 use std::hash::Hash;
@@ -18,12 +20,12 @@ pub struct SubsetSumArg<N: Num + Copy> {
 
 struct SubsetSum {
     now: Instant,
-    timeout_in_ms: Option<u128>
+    timeout_in_ms: Option<u128>,
 }
 
 type SubsetSumResult<N> = Result<Option<Vec<N>>, SubsetSumError>;
 
-impl <N: Num + Copy + Hash> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for SubsetSum {
+impl<N: Num + Copy + Hash> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for SubsetSum {
     #[inline]
     fn body(&self, subset_sum: impl Fn(SubsetSumArg<N>) -> SubsetSumResult<N>, arg: SubsetSumArg<N>) -> SubsetSumResult<N> {
         if let Some(timeout) = self.timeout_in_ms {
@@ -57,12 +59,14 @@ impl <N: Num + Copy + Hash> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for Sub
     }
 }
 
-pub fn get_subset_sum<N: Num + Copy + Hash + Eq>(
-    list: Vec<N>,
+pub fn get_subset_sum<N: Num + Copy + Hash + Eq + Ord>(
+    mut list: Vec<N>,
     sum: N,
     timeout_in_ms: Option<u128>,
 ) -> SubsetSumResult<N> {
     let subset_sum = unsync::memoize(SubsetSum { now: Instant::now(), timeout_in_ms });
+
+    list.sort_unstable();
 
     subset_sum.call(SubsetSumArg {
         integer_list: list,
@@ -72,7 +76,10 @@ pub fn get_subset_sum<N: Num + Copy + Hash + Eq>(
 
 #[cfg(test)]
 mod tests {
+    extern crate test;
+
     use crate::get_subset_sum;
+    use test::Bencher;
 
     #[test]
     fn it_should_return_empty_vec_if_sum_is_zero() {
@@ -116,5 +123,23 @@ mod tests {
         expect_subset_sum_no_result(vec![3, 6], 1);
         expect_subset_sum_no_result(vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], -1);
         expect_subset_sum_no_result(vec![2, 3, 7, 4, 11, 5, 6, 8, 9, -1, 10], -2);
+    }
+
+    #[bench]
+    #[allow(unused_must_use)]
+    fn bench_10_sized_ordered_vec_no_result(bencher: &mut Bencher) {
+        bencher.iter(|| { get_subset_sum::<i32>(vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10], -1, None); });
+    }
+
+    #[bench]
+    #[allow(unused_must_use)]
+    fn bench_10_sized_unordered_vec_no_result(bencher: &mut Bencher) {
+        bencher.iter(|| { get_subset_sum::<i32>(vec![10, 8, 3, 4, 6, 1, 2, 7, 9, 5], -1, None); });
+    }
+
+    #[bench]
+    #[allow(unused_must_use)]
+    fn bench_5_sized_vec_no_result(bencher: &mut Bencher) {
+        bencher.iter(|| { get_subset_sum::<i32>(vec![1, 2, 3, 4, 5], -1, None); });
     }
 }
