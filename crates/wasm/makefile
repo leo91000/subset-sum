@@ -16,9 +16,9 @@ build:
 
 	wasm-pack build --target nodejs --release  --out-dir dist/cjs
 	sed -i 's/Int32Array/number[]/g' dist/cjs/wasm_subset_sum.d.ts
-	sed -i 's/@param {Int32Array/@param {number[]/g' dist/cjs/wasm_subset_sum_bg.js
-	sed -i 's/@returns {Int32Array/@returns {number[]/g' dist/cjs/wasm_subset_sum_bg.js
-	sed -i 's/return v1/return v1 ? Array.from(v1) : undefined/g' dist/cjs/wasm_subset_sum_bg.js
+	sed -i 's/@param {Int32Array/@param {number[]/g' dist/cjs/wasm_subset_sum.js
+	sed -i 's/@returns {Int32Array/@returns {number[]/g' dist/cjs/wasm_subset_sum.js
+	sed -i 's/return v1/return v1 ? Array.from(v1) : undefined/g' dist/cjs/wasm_subset_sum.js
 	wasm-opt -O3 -o dist/cjs/wasm_subset_sum_bg.wasm dist/cjs/wasm_subset_sum_bg.wasm
 	rm -rf dist/cjs/package.json
 	rm -rf dist/cjs/.gitignore

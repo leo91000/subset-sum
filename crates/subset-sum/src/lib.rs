@@ -1,5 +1,3 @@
-#![feature(test)]
-
 mod error;
 
 use std::hash::Hash;
@@ -76,10 +74,7 @@ pub fn get_subset_sum<N: Num + Copy + Hash + Eq + Ord>(
 
 #[cfg(test)]
 mod tests {
-    extern crate test;
-
     use crate::get_subset_sum;
-    use test::Bencher;
 
     #[test]
     fn it_should_return_empty_vec_if_sum_is_zero() {
@@ -123,23 +118,5 @@ mod tests {
         expect_subset_sum_no_result(vec![3, 6], 1);
         expect_subset_sum_no_result(vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], -1);
         expect_subset_sum_no_result(vec![2, 3, 7, 4, 11, 5, 6, 8, 9, -1, 10], -2);
-    }
-
-    #[bench]
-    #[allow(unused_must_use)]
-    fn bench_10_sized_ordered_vec_no_result(bencher: &mut Bencher) {
-        bencher.iter(|| { get_subset_sum::<i32>(vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10], -1, None); });
-    }
-
-    #[bench]
-    #[allow(unused_must_use)]
-    fn bench_10_sized_unordered_vec_no_result(bencher: &mut Bencher) {
-        bencher.iter(|| { get_subset_sum::<i32>(vec![10, 8, 3, 4, 6, 1, 2, 7, 9, 5], -1, None); });
-    }
-
-    #[bench]
-    #[allow(unused_must_use)]
-    fn bench_5_sized_vec_no_result(bencher: &mut Bencher) {
-        bencher.iter(|| { get_subset_sum::<i32>(vec![1, 2, 3, 4, 5], -1, None); });
     }
 }

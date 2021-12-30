@@ -1,0 +1,112 @@
+name: CI-WASM
+env:
+  DEBUG: napi:*
+  APP_NAME: subset-sum
+  MACOSX_DEPLOYMENT_TARGET: '10.13'
+'on':
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - '**/*.md'
+      - LICENSE
+      - '**/*.gitignore'
+      - .editorconfig
+      - docs/**
+  pull_request: null
+jobs:
+  build:
+    if: '!contains(github.event.head_commit.message, ''skip ci'')'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          check-latest: true
+          cache: yarn
+          architecture: ${{ matrix.settings.architecture }}
+      - name: Install
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+          toolchain: stable
+          target: x86_64-unknown-linux-gnu
+      - name: Generate Cargo.lock
+        uses: actions-rs/cargo@v1
+        with:
+          command: generate-lockfile
+      - name: Cache cargo registry
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/registry
+          key: x86_64-unknown-linux-gnu-node@16-cargo-registry-trimmed-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo index
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/git
+          key: x86_64-unknown-linux-gnu-node@16-cargo-index-trimmed-${{ hashFiles('**/Cargo.lock') }}
+      - name: Build
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+          cd crates/wasm
+          npm i -g wasm-opt
+          make build
+        shell: bash
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: wasm
+          path: crates/wasm/dist
+          if-no-files-found: error
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          check-latest: true
+          cache: yarn
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: npm-cache-ubuntu-latest-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            npm-cache-
+      - name: Install dependencies
+        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: crates/wasm/dist
+      - name: Publish
+        run: |
+          cd crates/wasm
+          export VERSION=$(git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$")
+          export NEXT_VERSION=$(it log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+")
+          if $VERSION;
+          then
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            sed -i 's/TO_BE_DEFINED/$VERSION/g' package.json
+            npm publish --access public
+          elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
+          then
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            sed -i 's/TO_BE_DEFINED/$NEXT_VERSION/g' package.json
+            npm publish --tag next --access public
+          else
+            echo "Not a release, skipping publish"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
