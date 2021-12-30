@@ -89,20 +89,22 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: crates/wasm/dist
+      - name: Get publish version
+        run: |
+          echo "VERSION=$(git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$")" >> $GITHUB_ENV
+          echo "NEXT_VERSION=$(git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+")" >> $GITHUB_ENV
       - name: Publish
         run: |
           cd crates/wasm
-          export VERSION=$(git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$")
-          export NEXT_VERSION=$(it log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+")
-          if $VERSION;
+          if [ -n "$VERSION" ];
           then
             echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            sed -i 's/TO_BE_DEFINED/$VERSION/g' package.json
+            sed -i "s/TO_BE_DEFINED/$VERSION/g" package.json
             npm publish --access public
-          elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
+          elif [ -n "$NEXT_VERSION" ];
           then
             echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            sed -i 's/TO_BE_DEFINED/$NEXT_VERSION/g' package.json
+            sed -i "s/TO_BE_DEFINED/$NEXT_VERSION/g" package.json
             npm publish --tag next --access public
           else
             echo "Not a release, skipping publish"
