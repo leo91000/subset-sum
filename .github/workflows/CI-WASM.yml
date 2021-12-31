@@ -88,6 +88,7 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v2
         with:
+          name: wasm
           path: crates/wasm/dist
       - name: Get publish version
         run: |
