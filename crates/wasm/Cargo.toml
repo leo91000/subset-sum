@@ -8,7 +8,7 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-wasm-bindgen = { version = "0.2.63" }
+wasm-bindgen = { version = "0.2.79" }
 subset_sum = { path = "../subset-sum", features = ["wasm-js"] }
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
