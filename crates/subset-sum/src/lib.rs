@@ -44,7 +44,7 @@ impl<N: Num + Copy + Hash> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for Subs
             return Ok(Some(arg.integer_list))
         }
 
-        if arg.integer_list.contains(arg.sum) {
+        if arg.integer_list.contains(&arg.sum) {
             return Ok(Some(vec![arg.sum]))
         }
 
