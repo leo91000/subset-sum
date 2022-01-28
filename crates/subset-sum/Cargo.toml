@@ -13,7 +13,7 @@ num-traits = "0.2.14"
 fn-memo = { version = "1.2", default-features = false }
 wasm-bindgen = { version = "^0.2.78", optional = true }
 instant = { version = "^0.1.12", features = ["wasm-bindgen", "inaccurate"], optional = true }
-napi = { version = "^2.0.2", optional = true }
+napi = { version = "^2.0.3", optional = true }
 
 [features]
 wasm-js = ["wasm-bindgen", "instant"]
