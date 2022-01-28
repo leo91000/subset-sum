@@ -24,7 +24,7 @@ struct SubsetSum {
 
 type SubsetSumResult<N> = Result<Option<Vec<N>>, SubsetSumError>;
 
-impl<N: Num + Copy + Hash + Sum> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for SubsetSum {
+impl<N: Num + Copy + Hash + Sum<&N>> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for SubsetSum {
     #[inline]
     fn body(&self, subset_sum: impl Fn(SubsetSumArg<N>) -> SubsetSumResult<N>, arg: SubsetSumArg<N>) -> SubsetSumResult<N> {
         if let Some(timeout) = self.timeout_in_ms {
@@ -66,7 +66,7 @@ impl<N: Num + Copy + Hash + Sum> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> fo
     }
 }
 
-pub fn get_subset_sum<N: Num + Copy + Hash + Eq + Ord + Sum>(
+pub fn get_subset_sum<N: Num + Copy + Hash + Eq + Ord + Sum<&N>>(
     mut list: Vec<N>,
     sum: N,
     timeout_in_ms: Option<u128>,
