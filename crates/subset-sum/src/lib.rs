@@ -40,6 +40,14 @@ impl<N: Num + Copy + Hash> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for Subs
             return Ok(None);
         }
 
+        if arg.integer_list.iter().sum::<N>() == arg.sum {
+            return Ok(Some(arg.integer_list))
+        }
+
+        if arg.integer_list.contains(arg.sum) {
+            return Ok(Some(vec![arg.sum]))
+        }
+
         for (index, &current) in arg.integer_list.iter().enumerate() {
             let mut subset = arg.integer_list.clone();
             subset.remove(index);
