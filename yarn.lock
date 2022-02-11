@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@napi-rs/cli@2.4.2":
-  "integrity" "sha512-+yCOuPqernvD8BMphbadF87ElaJ0rjanOZrbnauaEdR07YyoalGw3FTk15HHyflIwQKlYd69gkG5EM4WFkICKw=="
-  "resolved" "https://registry.npmjs.org/@napi-rs/cli/-/cli-2.4.2.tgz"
-  "version" "2.4.2"
+"@napi-rs/cli@2.4.4":
+  "integrity" "sha512-f+tvwCv1ka24dBqI2DgBhR7Oxl3DKHOp4onxLXwyBFt6iCADnr3YZIr1/2Iq5r3uqxFgaf01bfPsRQZPkEp0kQ=="
+  "resolved" "https://registry.npmjs.org/@napi-rs/cli/-/cli-2.4.4.tgz"
+  "version" "2.4.4"
