@@ -58,7 +58,7 @@ jobs:
           make build
         shell: bash
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wasm
           path: crates/wasm/dist
