@@ -19,17 +19,10 @@
       automerge: true,
     },
     {
-      matchPackagePatterns: ['eslint'],
-      labels: ["linting"],
-      groupName: 'Linting packages',
-      groupSlug: 'lint',
-      automerge: true,
-    },
-    {
-      matchPackageNames: ["node", "@types/node", "npm", "yarn"],
+      matchPackageNames: ["node"],
       groupName: "Node.js & NPM & Yarn",
       groupSlug: "node-npm-yarn",
-      automerge: true,
+      automerge: false,
     }
   ]
 }
