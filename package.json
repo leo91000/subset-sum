@@ -37,5 +37,10 @@
   },
   "author": "Léo Coletta <mail.leo.coletta@gmail.com>",
   "description": "Fast Node.js subset sum implementation",
-  "repository": "https://github.com/leo91000/subset-sum"
+  "repository": "https://github.com/leo91000/subset-sum",
+  "volta": {
+    "node": "16.14.2",
+    "yarn": "1.22.18",
+    "npm": "8.7.0"
+  }
 }

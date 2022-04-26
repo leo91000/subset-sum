@@ -1,0 +1,18 @@
+{
+  extends: [
+    "config:base"
+  ],
+  patch: {
+
+    automerge: true,
+    dependencyDashboardApproval: false
+  },
+  minor: {
+    automerge: true,
+    dependencyDashboardApproval: false
+  },
+  major: {
+    automerge: false,
+    dependencyDashboardApproval: true
+  }
+}
