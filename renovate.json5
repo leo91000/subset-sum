@@ -1,0 +1,35 @@
+{
+  schedule: [],
+  dependencyDashboard: true,
+  rangeStrategy: "bump",
+  prConcurrentLimit: 3,
+  prHourlyLimit: 10,
+  assignees: ["leo91000"],
+  timezone: "Europe/Paris",
+  labels: ["renovate", "deps"],
+  packageRules: [
+    {
+      matchUpdateTypes: ["major"],
+      stabilityDays: 7
+    },
+    {
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "all non-major dependencies",
+      groupSlug: "all-minor-patch",
+      automerge: true,
+    },
+    {
+      matchPackagePatterns: ['eslint'],
+      labels: ["linting"],
+      groupName: 'Linting packages',
+      groupSlug: 'lint',
+      automerge: true,
+    },
+    {
+      matchPackageNames: ["node", "@types/node", "npm", "yarn"],
+      groupName: "Node.js & NPM & Yarn",
+      groupSlug: "node-npm-yarn",
+      automerge: true,
+    }
+  ]
+}
