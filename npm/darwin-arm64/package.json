@@ -15,7 +15,7 @@
   "author": "Léo Coletta <mail.leo.coletta@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">= 10"
+    "node": ">= v16.14.2"
   },
   "repository": "https://github.com/leo91000/subset-sum"
 }
