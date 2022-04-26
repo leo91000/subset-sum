@@ -25,7 +25,7 @@
     "@napi-rs/cli": "2.4.5"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= v10.24.1"
   },
   "scripts": {
     "artifacts": "napi artifacts",
