@@ -122,14 +122,14 @@ jobs:
           cache: yarn
           architecture: ${{ matrix.settings.architecture }}
       - name: Install
-        uses: actions-rs/toolchain@v1.0.6
+        uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           override: true
           toolchain: stable
           target: ${{ matrix.settings.target }}
       - name: Generate Cargo.lock
-        uses: actions-rs/cargo@v1.0.1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command: generate-lockfile
       - name: Cache cargo registry
