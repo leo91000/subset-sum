@@ -129,7 +129,7 @@ jobs:
           toolchain: stable
           target: ${{ matrix.settings.target }}
       - name: Generate Cargo.lock
-        uses: actions-rs/cargo@v1.0.1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command: generate-lockfile
       - name: Cache cargo registry
