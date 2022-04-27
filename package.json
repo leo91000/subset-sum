@@ -25,7 +25,7 @@
     "@napi-rs/cli": "2.6.2"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= v10.24.1"
   },
   "scripts": {
     "artifacts": "napi artifacts",
@@ -39,7 +39,7 @@
   "description": "Fast Node.js subset sum implementation",
   "repository": "https://github.com/leo91000/subset-sum",
   "volta": {
-    "node": "16.14.2",
+    "node": "16.15.0",
     "yarn": "1.22.18",
     "npm": "8.7.0"
   }
