@@ -7,6 +7,7 @@
   assignees: ["leo91000"],
   timezone: "Europe/Paris",
   labels: ["renovate", "deps"],
+  masterIssue: true,
   packageRules: [
     {
       matchUpdateTypes: ["major"],
@@ -19,10 +20,11 @@
       automerge: true,
     },
     {
-      matchPackageNames: ["node"],
-      groupName: "Node.js & NPM & Yarn",
-      groupSlug: "node-npm-yarn",
-      automerge: false,
+      matchPackageNames: ["node-engine"],
+      matchDepTypes: ["engines"],
+      groupName: "Node.js Engine",
+      groupSlug: "node-engine",
+      enabled: false
     }
-  ]
+  ],
 }
