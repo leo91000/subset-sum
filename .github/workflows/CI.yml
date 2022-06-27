@@ -104,56 +104,70 @@ jobs:
     name: stable - ${{ matrix.settings.target }} - node@16
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v3.3.0
+        uses: actions/setup-node@v3
+        if: ${{ !matrix.settings.docker }}
         with:
           node-version: 16
           check-latest: true
           cache: yarn
-          architecture: ${{ matrix.settings.architecture }}
       - name: Install
-        uses: actions-rs/toolchain@v1.0.7
+        uses: actions-rs/toolchain@v1
+        if: ${{ !matrix.settings.docker }}
         with:
           profile: minimal
           override: true
           toolchain: stable
           target: ${{ matrix.settings.target }}
-      - name: Generate Cargo.lock
-        uses: actions-rs/cargo@v1.0.3
+      - name: Cache cargo
+        uses: actions/cache@v3
         with:
-          command: generate-lockfile
-      - name: Cache cargo registry
-        uses: actions/cache@v3.0.4
-        with:
-          path: ~/.cargo/registry
-          key: ${{ matrix.settings.target }}-node@16-cargo-registry-trimmed-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache cargo index
-        uses: actions/cache@v3.0.4
-        with:
-          path: ~/.cargo/git
-          key: ${{ matrix.settings.target }}-node@16-cargo-index-trimmed-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            .cargo-cache/registry/index/
+            .cargo-cache/registry/cache/
+            .cargo-cache/git/db/
+            target/
+          key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
       - name: Cache NPM dependencies
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3
         with:
-          path: node_modules
-          key: npm-cache-${{ matrix.settings.target }}-node@16-${{ hashFiles('yarn.lock') }}
-      - name: Pull latest image
-        run: ${{ matrix.settings.docker }}
-        env:
-          DOCKER_REGISTRY_URL: ghcr.io
-        if: ${{ matrix.settings.docker }}
+          path: .yarn/cache
+          key: npm-cache-build-${{ matrix.settings.target }}-node@16
       - name: Setup toolchain
         run: ${{ matrix.settings.setup }}
         if: ${{ matrix.settings.setup }}
         shell: bash
+      - name: Setup node x86
+        if: matrix.settings.target == 'i686-pc-windows-msvc'
+        run: yarn config set supportedArchitectures.cpu "ia32"
+        shell: bash
       - name: Install dependencies
-        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+        run: yarn install
+      - name: Setup node x86
+        uses: actions/setup-node@v3
+        if: matrix.settings.target == 'i686-pc-windows-msvc'
+        with:
+          node-version: 16
+          check-latest: true
+          cache: yarn
+          architecture: x86
+      - name: Build in docker
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker }}
+        with:
+          image: ${{ matrix.settings.docker }}
+          options: '--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:/build -w /build'
+          run: ${{ matrix.settings.build }}
       - name: Build
         run: ${{ matrix.settings.build }}
+        if: ${{ !matrix.settings.docker }}
         shell: bash
       - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v3
         with:
           name: bindings-${{ matrix.settings.target }}
           path: ${{ env.APP_NAME }}.*.node
@@ -162,7 +176,7 @@ jobs:
     runs-on: macos-10.15
     name: Build FreeBSD
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Build
         id: build
         uses: vmactions/freebsd-vm@v0.1.6
@@ -195,14 +209,14 @@ jobs:
             whoami
             env
             freebsd-version
-            yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+            yarn install
             yarn build
             strip -x *.node
             yarn test
             rm -rf node_modules
             rm -rf target
       - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v3
         with:
           name: bindings-freebsd
           path: ${{ env.APP_NAME }}.*.node
@@ -223,22 +237,22 @@ jobs:
           - '18'
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v3.3.0
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
           check-latest: true
           cache: yarn
       - name: Cache NPM dependencies
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3
         with:
-          path: node_modules
+          path: .yarn/cache
           key: npm-cache-test-${{ matrix.settings.target }}-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
-        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+        run: yarn install
       - name: Download artifacts
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v3
         with:
           name: bindings-${{ matrix.settings.target }}
           path: .
@@ -256,11 +270,11 @@ jobs:
       matrix:
         node:
           - '14'
-          - '16'	
+          - '16'
           - '18'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -268,14 +282,14 @@ jobs:
           check-latest: true
           cache: yarn
       - name: Cache NPM dependencies
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3
         with:
-          path: node_modules
-          key: npm-cache-test-linux-x64-gnu-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
+          path: .yarn/cache
+          key: npm-cache-test-linux-x64-gnu-${{ matrix.node }}
       - name: Install dependencies
-        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+        run: yarn install
       - name: Download artifacts
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-unknown-linux-gnu
           path: .
@@ -293,11 +307,11 @@ jobs:
       matrix:
         node:
           - '14'
-          - '16'	
+          - '16'
           - '18'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -305,14 +319,16 @@ jobs:
           check-latest: true
           cache: yarn
       - name: Cache NPM dependencies
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3
         with:
-          path: node_modules
-          key: npm-cache-test-x86_64-unknown-linux-musl-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
+          path: .yarn/cache
+          key: npm-cache-test-x86_64-unknown-linux-musl-${{ matrix.node }}
       - name: Install dependencies
-        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+        run: |
+          yarn config set supportedArchitectures.libc "musl"
+          yarn install
       - name: Download artifacts
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-unknown-linux-musl
           path: .
@@ -330,14 +346,14 @@ jobs:
       matrix:
         node:
           - '14'
-          - '16'	
+          - '16'
           - '18'
     runs-on: ubuntu-latest
     steps:
       - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Download artifacts
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v3
         with:
           name: bindings-aarch64-unknown-linux-gnu
           path: .
@@ -345,14 +361,15 @@ jobs:
         run: ls -R .
         shell: bash
       - name: Cache NPM dependencies
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3
         with:
-          path: node_modules
-          key: npm-cache-test-linux-aarch64-gnu-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
+          path: .yarn/cache
+          key: npm-cache-test-linux-aarch64-gnu-${{ matrix.node }}
       - name: Install dependencies
         run: |
-          yarn config set supportedArchitectures.libc "musl"
-          yarn install --ignore-scripts --ignore-platform --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+          yarn config set supportedArchitectures.cpu "arm64"
+          yarn config set supportedArchitectures.libc "glibc"
+          yarn install
       - name: Setup and run tests
         uses: addnab/docker-run-action@v3
         with:
@@ -369,9 +386,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Download artifacts
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v3
         with:
           name: bindings-aarch64-unknown-linux-musl
           path: .
@@ -379,15 +396,15 @@ jobs:
         run: ls -R .
         shell: bash
       - name: Cache NPM dependencies
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3
         with:
-          path: node_modules
-          key: npm-cache-test-linux-aarch64-musl-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
+          path: .yarn/cache
+          key: npm-cache-test-linux-aarch64-musl-${{ matrix.node }}
       - name: Install dependencies
         run: |
-          yarn config set supportedArchitectures.cpu "arm64"	
-          yarn config set supportedArchitectures.libc "glibc"
-          yarn install --ignore-scripts --ignore-platform --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+          yarn config set supportedArchitectures.cpu "arm64"
+          yarn config set supportedArchitectures.libc "musl"
+          yarn install
       - name: Setup and run tests
         uses: addnab/docker-run-action@v3
         with:
@@ -411,9 +428,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Download artifacts
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v3
         with:
           name: bindings-armv7-unknown-linux-gnueabihf
           path: .
@@ -421,12 +438,14 @@ jobs:
         run: ls -R .
         shell: bash
       - name: Cache NPM dependencies
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3
         with:
-          path: node_modules
-          key: npm-cache-test-linux-arm-gnueabihf-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
+          path: .yarn/cache
+          key: npm-cache-test-linux-arm-gnueabihf-${{ matrix.node }}
       - name: Install dependencies
-        run: yarn install --ignore-scripts --ignore-platform --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+        run: |
+          yarn config set supportedArchitectures.cpu "arm"
+          yarn install
       - name: Setup and run tests
         uses: addnab/docker-run-action@v3
         with:
@@ -448,7 +467,7 @@ jobs:
       - test-linux-aarch64-musl-binding
       - test-linux-arm-gnueabihf-binding
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -456,14 +475,14 @@ jobs:
           check-latest: true
           cache: yarn
       - name: Cache NPM dependencies
-        uses: actions/cache@v3	
-        with:	
-          path: .yarn/cache	
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
           key: npm-cache-ubuntu-latest-publish
       - name: Install dependencies
-        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+        run: yarn install
       - name: Download all artifacts
-        uses: actions/download-artifact@v3.0.0
+        uses: actions/download-artifact@v3
         with:
           path: artifacts
       - name: Move artifacts
