@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3.0.2
       - name: Setup node
-        uses: actions/setup-node@v3.3.0
+        uses: actions/setup-node@v3.4.1
         with:
           node-version: 16
           check-latest: true
@@ -41,12 +41,12 @@ jobs:
         with:
           command: generate-lockfile
       - name: Cache cargo registry
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3.0.5
         with:
           path: ~/.cargo/registry
           key: x86_64-unknown-linux-gnu-node@16-cargo-registry-trimmed-${{ hashFiles('**/Cargo.lock') }}
       - name: Cache cargo index
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3.0.5
         with:
           path: ~/.cargo/git
           key: x86_64-unknown-linux-gnu-node@16-cargo-index-trimmed-${{ hashFiles('**/Cargo.lock') }}
@@ -71,13 +71,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3.0.2
       - name: Setup node
-        uses: actions/setup-node@v3.3.0
+        uses: actions/setup-node@v3.4.1
         with:
           node-version: 16
           check-latest: true
           cache: yarn
       - name: Cache NPM dependencies
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3.0.5
         with:
           path: node_modules
           key: npm-cache-ubuntu-latest-${{ hashFiles('yarn.lock') }}
