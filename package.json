@@ -39,7 +39,7 @@
   "description": "Fast Node.js subset sum implementation",
   "repository": "https://github.com/leo91000/subset-sum",
   "volta": {
-    "node": "16.17.1",
+    "node": "16.18.0",
     "yarn": "1.22.19",
     "npm": "8.19.2"
   }
