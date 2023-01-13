@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@napi-rs/cli@2.14.2":
-  version "2.14.2"
-  resolved "https://registry.yarnpkg.com/@napi-rs/cli/-/cli-2.14.2.tgz#02c7ba63b8169a8a570f8f875b542b943ce9e57b"
-  integrity sha512-g2bGIhu+p/+wZJlNYGYbb2feQs7vF0dKIMJY8jOBdhU4r14TqxBPEr7P/xoFzHiJ7vCNdJ0rldcC+nOSnJwCTw==
+"@napi-rs/cli@2.14.3":
+  version "2.14.3"
+  resolved "https://registry.yarnpkg.com/@napi-rs/cli/-/cli-2.14.3.tgz#fb2f554aaaf04f4583661b37149a38d9ee1045fc"
+  integrity sha512-yPc3dXHwynwR815s/7NczYx61wwmkZS1zlzgoVV+KaYJ9qAcd7pRiCZ7n/lBYL9lqUPWFZ7D9QYDn7b6teIsow==
