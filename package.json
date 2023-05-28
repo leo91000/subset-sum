@@ -22,7 +22,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@napi-rs/cli": "2.14.8"
+    "@napi-rs/cli": "2.16.1"
   },
   "engines": {
     "node": ">= 10"
@@ -39,8 +39,8 @@
   "description": "Fast Node.js subset sum implementation",
   "repository": "https://github.com/leo91000/subset-sum",
   "volta": {
-    "node": "18.15.0",
+    "node": "18.16.0",
     "yarn": "1.22.19",
-    "npm": "9.6.2"
+    "npm": "9.6.7"
   }
 }
