@@ -11,9 +11,9 @@ crate-type = ["lib"]
 strum_macros = "0.26.4"
 num-traits = "0.2.19"
 fn-memo = { version = "1.2", default-features = false }
-wasm-bindgen = { version = "^0.2.92", optional = true }
+wasm-bindgen = { version = "^0.2.95", optional = true }
 instant = { version = "^0.1.13", features = ["wasm-bindgen", "inaccurate"], optional = true }
-napi = { version = "^2.16.8", optional = true }
+napi = { version = "^2.16.12", optional = true }
 
 [features]
 wasm-js = ["wasm-bindgen", "instant"]
