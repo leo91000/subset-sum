@@ -10,8 +10,8 @@ use std::iter::Sum;
 use std::time::Instant;
 
 #[derive(Hash, Eq, PartialEq, Clone)]
-pub struct SubsetSumArg<N: Num + Copy> {
-    integer_list: Vec<N>,
+pub struct SubsetSumArg<'a, N: Num + Copy> {
+    integer_list: &'a [N],
     sum: N,
 }
 
@@ -22,12 +22,15 @@ struct SubsetSum {
 
 pub type SubsetSumResult<N> = Result<Option<Vec<N>>, SubsetSumError>;
 
-impl<N: Num + Copy + Hash + Sum> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> for SubsetSum {
+impl<'a, N> RecurFn<SubsetSumArg<'a, N>, SubsetSumResult<N>> for SubsetSum
+where
+    N: Num + Copy + Hash + Sum + Eq + Ord,
+{
     #[inline]
     fn body(
         &self,
-        subset_sum: impl Fn(SubsetSumArg<N>) -> SubsetSumResult<N>,
-        arg: SubsetSumArg<N>,
+        subset_sum: impl Fn(SubsetSumArg<'a, N>) -> SubsetSumResult<N>,
+        arg: SubsetSumArg<'a, N>,
     ) -> SubsetSumResult<N> {
         if let Some(timeout) = self.timeout_in_ms {
             if self.now.elapsed().as_millis() >= timeout {
@@ -44,7 +47,7 @@ impl<N: Num + Copy + Hash + Sum> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> fo
         }
 
         if arg.integer_list.iter().copied().sum::<N>() == arg.sum {
-            return Ok(Some(arg.integer_list));
+            return Ok(Some(arg.integer_list.to_vec()));
         }
 
         if arg.integer_list.contains(&arg.sum) {
@@ -52,8 +55,7 @@ impl<N: Num + Copy + Hash + Sum> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> fo
         }
 
         for (index, &current) in arg.integer_list.iter().enumerate() {
-            let mut subset = arg.integer_list.clone();
-            subset.remove(index);
+            let subset = &arg.integer_list[index + 1..];
 
             if let Some(mut result) = subset_sum(SubsetSumArg {
                 integer_list: subset,
@@ -68,11 +70,14 @@ impl<N: Num + Copy + Hash + Sum> RecurFn<SubsetSumArg<N>, SubsetSumResult<N>> fo
     }
 }
 
-pub fn get_subset_sum<N: Num + Copy + Hash + Eq + Ord + Sum>(
+pub fn get_subset_sum<N>(
     mut list: Vec<N>,
     sum: N,
     timeout_in_ms: Option<u128>,
-) -> SubsetSumResult<N> {
+) -> SubsetSumResult<N>
+where
+    N: Num + Copy + Hash + Eq + Ord + Sum,
+{
     let subset_sum = unsync::memoize(SubsetSum {
         now: Instant::now(),
         timeout_in_ms,
@@ -81,7 +86,7 @@ pub fn get_subset_sum<N: Num + Copy + Hash + Eq + Ord + Sum>(
     list.sort_unstable();
 
     subset_sum.call(SubsetSumArg {
-        integer_list: list,
+        integer_list: &list,
         sum,
     })
 }
