@@ -16,7 +16,7 @@ instant = { version = "^0.1.13", features = [
   "wasm-bindgen",
   "inaccurate",
 ], optional = true }
-napi = { version = "^2.16.12", optional = true }
+napi = { version = "^2.16.13", optional = true }
 
 [features]
 wasm-js = ["wasm-bindgen", "instant"]
