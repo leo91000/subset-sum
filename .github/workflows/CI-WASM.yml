@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.1
       - name: Setup node
-        uses: actions/setup-node@v3.8.2
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: 16
           check-latest: true
@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.1
       - name: Setup node
-        uses: actions/setup-node@v3.8.2
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: 16
           check-latest: true
