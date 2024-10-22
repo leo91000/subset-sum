@@ -9,7 +9,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 wasm-bindgen = { version = "0.2.95" }
-serde = { version = "1.0.211", features = ["derive"] }
+serde = { version = "1.0.213", features = ["derive"] }
 serde-wasm-bindgen = "0.6.5"
 subset_sum = { path = "../subset-sum", features = ["wasm-js"] }
 
