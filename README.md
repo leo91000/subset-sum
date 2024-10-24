@@ -34,11 +34,19 @@ pnpm add @leo91000/wasm-subset-sum
 ## Usage
 
 ```ts
-import { getSubsetSum } from '@leo91000/subset-sum' // or @leo91000/wasm-subset-sum
+import { getSubsetSum, getAllSubsetSums } from '@leo91000/subset-sum' // or @leo91000/wasm-subset-sum
 
+// Get one subset sum
 const results = getSubsetSum(
     [5, -7, 3, 11], // List to get the subset sum from
     8, // Target sum
     1000, // Timeout in ms
+)
+
+// Or get all subset sums possible sets
+const allResults = getAllSubsetSums(
+    [1, 3, 3, 3, 7],
+    10,
+    1000,
 )
 ```
